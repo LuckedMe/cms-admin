@@ -92,11 +92,11 @@ fos_ck_editor:
             toolbar_description:  ['@description_line']
             toolbar_email_template: ['@email_template_line']
         items:
-            base_line: ['Format', '-', 'Bold','Italic', '-', 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote', '-', 'Link', 'Unlink', '-', 'Image', '-', 'Table', '-', 'Source', '-']
-            cms_line: ['Format', '-', 'Bold','Italic', '-', 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote', '-', 'Link', 'Unlink', '-', 'Image', '-', 'Table', '-', 'CreateDiv', '-', 'CmsEmbed', 'Source'] # CreateDiv - is required for CmsEmbed
+            base_line: ['Format', '-', 'Bold','Italic', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote', '-', 'Link', 'Unlink', '-', 'Image', '-', 'Table', '-', 'Source', '-']
+            cms_line:  ['Format', '-', 'Bold','Italic', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote', '-', 'Link', 'Unlink', '-', 'Image', '-', 'Table', '-', 'CreateDiv', '-', 'CmsEmbed', 'Source'] # CreateDiv - is required for CmsEmbed
             faq_line: ['Bold','Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-']
-            description_line: ['Bold','Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-']
-            email_template_line: ['Bold','Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-']
+            description_line:    ['Bold','Italic', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-']
+            email_template_line: ['Bold','Italic', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink', '-']
 
 twig:
     form_themes:
