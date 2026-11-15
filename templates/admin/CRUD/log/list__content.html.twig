@@ -27,7 +27,7 @@
                     </tr>
                     <tr>
                         <td style="max-width: 300px; overflow-wrap: break-word; white-space: normal;">
-                            {{ object.request|raw|nl2br }}
+                            {{ object.request|striptags|nl2br }}
                         </td>
                     </tr>
                     <tr style="height: 10px">
@@ -42,7 +42,7 @@
                     </tr>
                     <tr>
                         <td style="max-width: 300px; overflow-wrap: break-word; white-space: normal;">
-                            {{ object.headers|raw|nl2br }}
+                            {{ object.headers|striptags|nl2br }}
                         </td>
                     </tr>
                     <tr style="height: 10px">
@@ -57,7 +57,7 @@
                     </tr>
                     <tr>
                         <td style="max-width: 300px; overflow-wrap: break-word; white-space: normal;">
-                            {{ object.response|raw|nl2br }}
+                            {{ object.response|striptags|nl2br }}
                         </td>
                     </tr>
                     <tr style="height: 10px">
@@ -72,7 +72,7 @@
                     </tr>
                     <tr>
                         <td style="max-width: 300px; overflow-wrap: break-word; white-space: normal;">
-                            {{ object.content|raw|nl2br }}
+                            {{ object.content|striptags|nl2br }}
                         </td>
                     </tr>
                     <tr style="height: 10px">
@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
                         <td style="max-width: 300px; overflow-wrap: break-word; white-space: normal;">
-                            {{ object.payload|raw|nl2br }}
+                            {{ object.payload|striptags|nl2br }}
                         </td>
                     </tr>
                     <tr style="height: 10px">

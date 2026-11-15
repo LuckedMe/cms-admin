@@ -1,5 +1,6 @@
-@slug=page-1
+#@slug=page-1
 #@slug=article-1
+@slug=homepage
 GET https://cms-admin.local/api/sites/{{site.id}}/pages/{{slug}}
 Accept: application/json
 Content-Type: application/json
