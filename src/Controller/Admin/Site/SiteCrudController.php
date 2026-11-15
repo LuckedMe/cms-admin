@@ -8,7 +8,7 @@ use App\Controller\Admin\AbstractCrudController;
 use App\Entity\Site\Site;
 use App\Entity\Site\SiteSettings;
 use App\Message\Command\Site\SiteCacheClearCommand;
-use App\Message\Command\Site\SiteResetTokenCommand;
+use App\Service\Log\AppLogger;
 use App\Service\MessageBusHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,9 +17,12 @@ use Throwable;
 
 use function assert;
 
+use const PHP_EOL;
+
 class SiteCrudController extends AbstractCrudController
 {
     public function __construct(
+        private readonly AppLogger $logger,
         private readonly EntityManagerInterface $em,
         private readonly MessageBusHandler $messageBusHandler,
     ) {
@@ -42,7 +45,17 @@ class SiteCrudController extends AbstractCrudController
             $objectName = $this->admin->toString($object);
 
             try {
-                $this->messageBusHandler->handleCommand(new SiteResetTokenCommand($object->getId()));
+                // set new token
+                $oldToken = $object->getToken();
+                $token    = sha1(uniqid((string) mt_rand(), true));
+                $object->setToken($token);
+                $this->admin->update($object);
+
+                // log
+                $this->logger->debug('site-reset-token', [
+                    'siteId'  => $object->getId(),
+                    'payload' => '<strong>Old Token:</strong> ' . $oldToken . PHP_EOL . '<strong>New Token:</strong> ' . $token,
+                ]);
 
                 if ($this->isXmlHttpRequest($request)) {
                     return $this->renderJson(['result' => 'ok']);

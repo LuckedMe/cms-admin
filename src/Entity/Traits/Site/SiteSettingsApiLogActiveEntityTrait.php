@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait SiteSettingsApiLogActiveEntityTrait
 {
     #[ORM\Column(name: 'api_log_enabled', type: Types::BOOLEAN, nullable: false, options: ['default' => false])]
-    private bool $apiLogEnabled = true;
+    private bool $apiLogEnabled = false;
 
     public function isApiLogEnabled(): bool
     {

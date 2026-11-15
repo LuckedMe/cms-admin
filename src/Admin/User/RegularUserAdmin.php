@@ -14,6 +14,7 @@ class RegularUserAdmin extends AbstractUserAdmin
     protected function resolveUserRoles(): array
     {
         return [
+            UserRole::SiteManager->value,
             UserRole::User->value,
         ];
     }

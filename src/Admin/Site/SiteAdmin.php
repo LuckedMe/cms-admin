@@ -9,6 +9,7 @@ use App\Admin\Traits\ConfigureAdminFullTrait;
 use App\Admin\Traits\ConfigureFilterAutocompleteUsersTrait;
 use App\Admin\Traits\ConfigureFormAutocompleteUsersTrait;
 use App\Contract\Dictionary\User\UserRole;
+use App\Entity\Page\Page;
 use App\Entity\Site\Site;
 use App\Repository\Site\SiteRepository;
 use Carbon\CarbonImmutable;
@@ -17,6 +18,7 @@ use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Exception\ModelManagerThrowable;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Form\Type\AdminType;
 use Sonata\AdminBundle\Route\RouteCollectionInterface;
@@ -374,5 +376,25 @@ class SiteAdmin extends AbstractAdmin
                 $site->setExpireAt($expireAt);
             }
         }
+    }
+
+    /**
+     * @throws ModelManagerThrowable
+     */
+    protected function postPersist(object $object): void
+    {
+        /** @var Site $site */
+        $site  = $object;
+        $token = sha1(uniqid((string) mt_rand(), true));
+        $site->setToken($token);
+        $this->getModelManager()->update($site);
+
+        $page = new Page()
+            ->setHomepage(true)
+            ->setTitle('Welcome')
+            ->setSlug('homepage')
+            ->setSite($site);
+
+        $this->getModelManager()->create($page);
     }
 }

@@ -15,6 +15,7 @@ class AdminUserAdmin extends AbstractUserAdmin
     {
         return [
             UserRole::Admin->value,
+            UserRole::SiteManager->value,
         ];
     }
 }
