@@ -1,4 +1,4 @@
-GET https://api.cms-admin.local/sites/{{site.id}}/banners/random
+GET https://cms-admin.local/api/sites/{{site.id}}/banners/random
 Accept: application/json
 Accept-Language: en_GB
 Content-Type: application/json

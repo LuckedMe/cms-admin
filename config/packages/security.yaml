@@ -75,15 +75,13 @@ security:
             security: false
 
         api_doc:
-            pattern: ^/doc$
-            host: '^%api_domain%$'
+            pattern: ^/api/doc$
             http_basic:
                 provider: api_doc_users
                 realm: Basic
 
         api_site:
-            pattern: '^/sites'
-            host: '^%api_domain%$'
+            pattern: '^/api/sites'
             lazy: true
             stateless: true
             provider: api_site_token_user_provider
@@ -106,8 +104,7 @@ security:
                 provider: api_site_token_user_provider
 
         admin:
-            pattern: ^/
-            host: '^%admin_domain%$'
+            pattern: ^/admin
             lazy: true
             provider: regular_user_provider
             login_throttling:
@@ -140,11 +137,11 @@ security:
     access_control:
         - { path: '^/(css|js|images|assets|favicon\.ico)', roles: PUBLIC_ACCESS }
         # allow unauthenticated users to access the login form
-        - { host: '^%api_domain%$', path: '^/doc$', roles: ROLE_API_DOC }
-        - { host: '^%api_domain%$', path: '^/sites/auth/(login|refresh-token)', roles: PUBLIC_ACCESS }
-        - { host: '^%api_domain%$', path: '^/sites', roles: ROLE_API_SITE }
-        - { host: '^%admin_domain%$', path: '^/login', roles: PUBLIC_ACCESS }
-        - { host: '^%admin_domain%$', path: '^/', roles: [ROLE_SITE_MANAGER] }
+        - { path: '^/api/doc$', roles: ROLE_API_DOC }
+        - { path: '^/api/sites/auth/(login|refresh-token)', roles: PUBLIC_ACCESS }
+        - { path: '^/api/sites', roles: ROLE_API_SITE }
+        - { path: '^/admin/(login|login-check)', roles: PUBLIC_ACCESS }
+        - { path: '^/admin', roles: [ROLE_SITE_MANAGER] }
         - { path: '^/', roles: PUBLIC_ACCESS }
 
 

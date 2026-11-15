@@ -8,7 +8,6 @@ use App\Contract\Entity\UserInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Sonata\GoogleAuthenticator\GoogleAuthenticator;
 use Sonata\GoogleAuthenticator\GoogleQrUrl;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,8 +32,6 @@ readonly class AdminTwoStepAuthListener implements EventSubscriberInterface
         private EntityManagerInterface $em,
         private GoogleAuthenticator $authenticator,
         private TokenStorageInterface $tokenStorage,
-        #[Autowire(param: 'admin_domain')]
-        private string $adminDomain,
     ) {
     }
 
@@ -56,7 +53,9 @@ readonly class AdminTwoStepAuthListener implements EventSubscriberInterface
             return;
         }
 
-        if ($event->getRequest()->getHost() !== $this->adminDomain) {
+        $request = $event->getRequest();
+
+        if (!str_starts_with($request->getPathInfo(), '/admin')) {
             return;
         }
 

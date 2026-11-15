@@ -14,8 +14,6 @@ parameters:
     storage_dir: '%kernel.project_dir%/var/storage' #ss
     storage_cache_dir: '%kernel.project_dir%/var/cache/storage'
     translation_cache_dir: '%kernel.project_dir%/var/cache/translations'
-    api_domain: '%env(API_DOMAIN)%'
-    admin_domain: '%env(ADMIN_DOMAIN)%'
 
     site_image_storage_dir: '%storage_dir%/images/site'
     site_image_cache_storage_dir: '%storage_cache_dir%/images/site'

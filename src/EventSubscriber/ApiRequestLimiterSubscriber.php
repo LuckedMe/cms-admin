@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -12,15 +11,13 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 
 use function max;
+use function str_starts_with;
 use function time;
 
 readonly class ApiRequestLimiterSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private RateLimiterFactoryInterface $apiRequestLimiter,
-
-        #[Autowire(param: 'api_domain')]
-        private string $apiDomain,
     ) {
     }
 
@@ -28,8 +25,8 @@ readonly class ApiRequestLimiterSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        // checks the host, not ApiRequestDetector: that also matches admin XHR and /api/cms-embeds
-        if (!$event->isMainRequest() || $request->getHost() !== $this->apiDomain) {
+        // checks the /api/ prefix, not ApiRequestDetector: that also matches admin XHR and /admin/api/cms-embeds
+        if (!$event->isMainRequest() || !str_starts_with($request->getPathInfo(), '/api/')) {
             return;
         }
 

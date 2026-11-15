@@ -26,11 +26,10 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Translation\LocaleSwitcher;
 use Symfony\Component\Uid\Uuid;
 
-#[Route(host: '%api_domain%')]
 class GetSitePageCollectionController extends AbstractController
 {
     #[Route(
-        path: '/sites/{id}/pages',
+        path: '/api/sites/{id}/pages',
         name: 'api.site.page.collection',
         requirements: ['id' => Requirement::UUID],
         options: ['expose' => true],

@@ -12,7 +12,7 @@ nelmio_cors:
             allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
             max_age: 3600
 
-        '^/sites/':
+        '^/api/sites/':
             allow_headers: ['*']
             allow_methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
             max_age: 3600

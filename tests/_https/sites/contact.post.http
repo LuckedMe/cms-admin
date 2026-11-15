@@ -1,4 +1,4 @@
-POST https://api.cms-admin.local/sites/{{site.id}}/contacts
+POST https://cms-admin.local/api/sites/{{site.id}}/contacts
 Accept: application/json
 Accept-Language: en_GB
 Content-Type: application/json

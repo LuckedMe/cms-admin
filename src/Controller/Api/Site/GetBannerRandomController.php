@@ -21,11 +21,10 @@ use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Uid\Uuid;
 
-#[Route(host: '%api_domain%')]
 class GetBannerRandomController extends AbstractController
 {
     #[Route(
-        path: '/sites/{id}/banners/random',
+        path: '/api/sites/{id}/banners/random',
         name: 'api.site.banner.get-random',
         requirements: ['id' => Requirement::UUID],
         options: ['expose' => true],

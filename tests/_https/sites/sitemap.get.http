@@ -1,4 +1,4 @@
-GET https://api.cms-admin.local/sites/{{site.id}}/sitemap
+GET https://cms-admin.local/api/sites/{{site.id}}/sitemap
 Accept: application/json
 Accept-Language: en_GB
 Content-Type: application/json

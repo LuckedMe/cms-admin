@@ -17,10 +17,14 @@ x-app: &app
         APP_ENV: prod
         APP_DEBUG: 0
         DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.0.32&charset=utf8mb4
+        JWT_SECRET_KEY: /var/www/html/config/jwt/private.pem
+        JWT_PUBLIC_KEY: /var/www/html/config/jwt/public.pem
     volumes:
         - storage:/var/www/html/var/storage
         - sessions:/var/www/html/var/session
         - uploaded:/var/www/html/public/uploaded
+        # JWT keypair of the site API: generate once, see docs/main-dockerfile-fix.md
+        - jwt:/var/www/html/config/jwt
     networks:
         - app
     depends_on:
@@ -37,6 +41,8 @@ services:
             APP_ENV: prod
             APP_DEBUG: 0
             DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.0.32&charset=utf8mb4
+            JWT_SECRET_KEY: /var/www/html/config/jwt/private.pem
+            JWT_PUBLIC_KEY: /var/www/html/config/jwt/public.pem
             RUN_MIGRATIONS: ${RUN_MIGRATIONS:-1}
 
     # consumes the async messenger queues (MESSENGER_TRANSPORT_DSN), highest priority first;
@@ -93,6 +99,7 @@ volumes:
     storage:
     sessions:
     uploaded:
+    jwt:
 
 networks:
     app:

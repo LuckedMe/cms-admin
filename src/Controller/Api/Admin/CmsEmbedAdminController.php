@@ -14,11 +14,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(host: '%admin_domain%')]
 class CmsEmbedAdminController extends AbstractController
 {
     #[Route(
-        path: '/api/cms-embeds',
+        path: '/admin/api/cms-embeds',
         name: 'api.admin.cms_embed.collection',
         options: ['expose' => true],
         methods: ['GET']

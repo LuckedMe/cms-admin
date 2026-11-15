@@ -1,7 +1,6 @@
 # global locale switcher, see sonata_translation.locale_switcher
 sonata_translation:
     resource: '@SonataTranslationBundle/Resources/config/routes.yaml'
-    prefix: /
-    host: '%admin_domain%'
+    prefix: /admin
     requirements:
         locale: '%locale_requirement%'

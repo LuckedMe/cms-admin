@@ -55,7 +55,7 @@ class ApiSiteLoginAuthenticator extends AbstractAuthenticator
     public function supports(Request $request): ?bool
     {
         return $this->apiRequestDetector->isApiRequest($request)
-            && str_contains($request->getPathInfo(), '/sites/auth/');
+            && str_contains($request->getPathInfo(), '/api/sites/auth/');
     }
 
     public function authenticate(Request $request): Passport

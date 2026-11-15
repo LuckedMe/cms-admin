@@ -1,4 +1,4 @@
-GET https://api.cms-admin.local/sites/{{site.id}}
+GET https://cms-admin.local/api/sites/{{site.id}}
 Accept: application/json
 Accept-Language: uk_UA
 Content-Type: application/json

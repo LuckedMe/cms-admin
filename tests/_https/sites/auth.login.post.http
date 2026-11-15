@@ -1,4 +1,4 @@
-POST https://api.cms-admin.local/sites/auth/login
+POST https://cms-admin.local/api/sites/auth/login
 Accept: application/json
 Accept-Language: en_GB
 Content-Type: application/json

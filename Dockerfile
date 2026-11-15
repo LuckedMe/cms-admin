@@ -13,6 +13,8 @@
 
 ARG PHP_VERSION=8.4
 ARG NODE_VERSION=24
+# webpack heap limit in MB; lower it (e.g. 1024) when building on a small VPS
+ARG NODE_MAX_OLD_SPACE=2048
 
 ###############################################################################
 # PHP runtime: extensions shared by the build stages and the final image
@@ -58,6 +60,9 @@ RUN --mount=type=cache,target=/root/.composer/cache \
 ###############################################################################
 FROM node:${NODE_VERSION}-alpine AS assets
 
+ARG NODE_MAX_OLD_SPACE
+ENV NODE_OPTIONS=--max-old-space-size=${NODE_MAX_OLD_SPACE}
+
 WORKDIR /var/www/html
 
 COPY package.json yarn.lock ./
@@ -85,15 +90,15 @@ RUN composer dump-autoload --no-dev --classmap-authoritative \
     && composer run-script --no-dev post-install-cmd \
     && composer run-script --no-dev install-editor \
     && rm -rf var/cache/prod \
-    && mkdir -p var/cache var/log var/session var/storage var/share public/uploaded \
-    && chown -R app:app var public/uploaded
+    && mkdir -p var/cache var/log var/session var/storage var/share public/uploaded config/jwt \
+    && chown -R app:app var public/uploaded config/jwt
 
 COPY --chmod=0755 .docker/php-fpm/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 
 USER app:app
 
-# uploaded files, sessions and logs must outlive the container
-VOLUME ["/var/www/html/var/storage", "/var/www/html/var/session", "/var/www/html/public/uploaded"]
+# uploaded files, sessions, logs and the JWT keypair must outlive the container
+VOLUME ["/var/www/html/var/storage", "/var/www/html/var/session", "/var/www/html/public/uploaded", "/var/www/html/config/jwt"]
 
 EXPOSE 9000
 

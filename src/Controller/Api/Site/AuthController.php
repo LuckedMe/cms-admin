@@ -11,11 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 
-#[Route(host: '%api_domain%')]
 class AuthController extends AbstractController
 {
     #[Route(
-        path: '/sites/auth/login',
+        path: '/api/sites/auth/login',
         name: 'api.site.auth.login',
         requirements: ['id' => Requirement::UUID],
         options: ['expose' => true],
