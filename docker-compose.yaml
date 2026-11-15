@@ -10,6 +10,7 @@ services:
         extra_hosts:
             - "cms-admin.local:host-gateway"
             - "cms-client.local:host-gateway"
+            - "vacancy-grabber.local:host-gateway"
         volumes:
             - ./:/var/www/html:rw
         networks:

@@ -1,0 +1,13 @@
+# local
+@token=9ca4bcf30ba20382b14e2eb8b77692b6bf1abad6
+
+#POST https://vacancy-grabber.lucked.me/api/cms-admin-cache-clear
+#POST https://cms-client.local/cms-admin-client/cache-clear
+POST https://vacancy-grabber.local/cms-admin-client/cache-clear
+Accept: application/json
+Accept-Language: en_GB
+Content-Type: application/json
+X-API-KEY: {{token}}
+
+{
+}
