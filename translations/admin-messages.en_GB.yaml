@@ -351,8 +351,8 @@ LOG_ENTITY:
         URL: 'Url'
         REQUEST: 'Request'
         HEADERS: 'Headers'
-        RESPONSE: 'response'
-        CONTENT: 'content'
+        RESPONSE: 'Response'
+        CONTENT: 'Content'
         ENTRY_ID: 'Entry Id'
         PAYLOAD: 'Payload'
 

@@ -38,7 +38,7 @@ readonly class SiteCacheClearHandler implements CommandHandlerInterface
                 'siteId'   => $this->siteRepository->findOneByToken($command->token)?->getId()?->toString(),
                 'method'   => 'POST',
                 'url'      => $baseUri . $url,
-                'response' => $response->getStatusCode(),
+                'response' => $response->getContent(false),
             ]);
 
             // throw on error
