@@ -55,15 +55,15 @@ mysql-logs:
 install: ## Install PHP dependencies via Composer
 	$(PHP) composer install
 
-install-editor: ## Install PHP dependencies via Composer
-	$(PHP) composer install-editor
-
 update: ## Update PHP dependencies via Composer
 	$(PHP) composer update
 
 migrate: ## Run Doctrine migrations (dev and test environments)
 	$(PHP) ./bin/console doctrine:migrations:migrate --no-interaction
 	$(PHP) ./bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+install-editor: ## Install PHP dependencies via Composer
+	$(PHP) composer install-editor
 
 fixtures: ## Load database fixtures
 	$(PHP) ./bin/console doctrine:fixtures:load --no-interaction
@@ -81,14 +81,14 @@ jwt-keys: ## Generate the JWT authentication keypair (one-time setup)
 test: ## Run the full Codeception test suite
 	$(PHP) composer run test
 
-test-acceptance: ## Run acceptance tests in the selenium container (watch at http://localhost:7900; ARGS="LoginPageCest" to filter)
-	$(COMPOSE) up -d selenium nginx
-	@for i in $$(seq 1 30); do \
-		$(COMPOSE) exec -T php-fpm curl -s http://selenium:4444/status | grep -q '"ready": *true' && break; \
-		sleep 2; \
-	done
-	@(xdg-open "http://localhost:7900/?autoconnect=1&resize=scale" || open "http://localhost:7900/?autoconnect=1&resize=scale") >/dev/null 2>&1 &
-	$(COMPOSE) exec -T php-fpm php -d pcov.enabled=1 -d memory_limit=-1 ./vendor/bin/codecept run acceptance $(ARGS)
+#test-acceptance: ## Run acceptance tests in the selenium container (watch at http://localhost:7900; ARGS="LoginPageCest" to filter)
+#	$(COMPOSE) up -d selenium nginx
+#	@for i in $$(seq 1 30); do \
+#		$(COMPOSE) exec -T php-fpm curl -s http://selenium:4444/status | grep -q '"ready": *true' && break; \
+#		sleep 2; \
+#	done
+#	@(xdg-open "http://localhost:7900/?autoconnect=1&resize=scale" || open "http://localhost:7900/?autoconnect=1&resize=scale") >/dev/null 2>&1 &
+#	$(COMPOSE) exec -T php-fpm php -d pcov.enabled=1 -d memory_limit=-1 ./vendor/bin/codecept run acceptance $(ARGS)
 
 test-api: ## Run only the API Codeception test suite
 	$(PHP) composer run test:api
@@ -129,12 +129,52 @@ yarn-watch: ## Build frontend assets and watch for changes
 yarn-build: ## Build frontend assets for production
 	$(NODE) yarn build
 
+## --- Production (VPS) -------------------------------------------------------
+
+PROD     = docker compose -f docker-compose.prod.yaml --env-file .env.prod.local
+PROD_PHP = $(PROD) exec -T php-fpm php bin/console
+
+prod-build: ## [prod] Build production images
+	$(PROD) build
+
+prod-assets: ## [prod] Run only yarn install && yarn build (Dockerfile "assets" stage) to check the frontend build
+	DOCKER_BUILDKIT=1 docker build --target assets --progress=plain -t vacancy-grabber-prod-assets .
+
+prod-up: ## [prod] Build and (re)start the production stack
+	$(PROD) up -d --build --remove-orphans
+
+prod-down: ## [prod] Stop the production stack
+	$(PROD) down
+
+prod-migrate: ## [prod] Run DB migrations and set up messenger transports
+	$(PROD_PHP) doctrine:migrations:migrate --no-interaction --allow-no-migration
+	$(PROD_PHP) messenger:setup-transports --no-interaction
+
+prod-jwt-keys: ## [prod] Generate the JWT keypair into the jwt volume (one-time)
+	$(PROD_PHP) lexik:jwt:generate-keypair --skip-if-exists
+
+prod-logs: ## [prod] Follow production logs
+	$(PROD) logs -f --tail=200
+
+prod-ps: ## [prod] List production containers
+	$(PROD) ps
+
+prod-console: ## [prod] Open a shell in the production php-fpm container
+	$(PROD) exec php-fpm /bin/bash
+
 ## --- Help ---------------------------------------------------------------------
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: test-acceptance test-coverage-html test-web-api test-web-api-coverage docker-build docker-up docker-stop docker-down docker-restart docker-ps docker-logs \
-	php-console node-console install install-editor update migrate fixtures cache-clear routes-dump jwt-keys \
-	test test-api yarn-install yarn-dev yarn-watch yarn-build help
-
+.PHONY: cache-clear \
+	docker-build docker-down docker-logs docker-ps docker-restart docker-stop docker-up \
+	fixtures help \
+	install-editor install \
+	jwt-keys \
+	migrate \
+	node-console php-console \
+	prod-assets prod-build prod-console prod-down prod-jwt-keys prod-logs prod-migrate prod-ps prod-up \
+	test-api test-coverage-html test-coverage test test-unit test-web \
+	update \
+	yarn-build yarn-dev yarn-install yarn-watch

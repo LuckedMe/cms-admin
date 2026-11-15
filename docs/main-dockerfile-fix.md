@@ -17,7 +17,7 @@ Browser ─https─► Cloudflare (TLS, redirect to https) ─tunnel─► cloud
 |---|---|
 | The VPS has no public IP; Cloudflare terminates TLS | nginx listens on plain `:80` only. No certificates, no http→https redirect in nginx. |
 | Traefik routes by `Host` + `PathPrefix`, labels live in a server-side `docker-compose.traefik.yaml` | `docker-compose.prod.yaml` must not publish ports to be usable (the override resets `ports`). The nginx service must be named `nginx` and listen on 80. |
-| One domain; the app itself serves `/admin/*` and `/api/*` | No `server_name` / host-based logic in nginx. `ADMIN_DOMAIN` equals the public domain. |
+| One domain; the app itself serves `/admin/*` and `/api/*` | No `server_name` / host-based logic in nginx. `APP_DOMAIN` equals the public domain. |
 | Static files live under `/assets`, `/bundles`, `/uploaded` | The nginx image contains `public/`; `uploaded` is a shared volume. These are exactly the prefixes Traefik sends to the stack. |
 | The image is **built on the server** (`cms up -d --build`) | Small RAM: the webpack heap must be tunable (`NODE_MAX_OLD_SPACE`), layers must be cache-friendly, Node/Composer are not installed on the host. |
 | Compose project name is fixed to `cms-admin-prod` | Volume names (`mysql`, `storage`, `sessions`, `uploaded`, `jwt`) must not be renamed after the first start, or data "disappears". |
@@ -67,9 +67,9 @@ Mark each item OK / fixed / needs a decision.
 - [ ] `public/` is copied `--from=app`.
 
 ### Routing and domain (one domain with paths)
-- [ ] No leftover host-based routing: `grep -rn "api_domain\|API_DOMAIN\|admin\.\(cms\|example\)" config src .env* docker-compose*.yaml Dockerfile` finds nothing, except `admin_domain` / `ADMIN_DOMAIN`.
-- [ ] `ADMIN_DOMAIN` is set in `.env.prod.local.dist`. It must equal the public domain, because the admin routes and the admin firewall have `host: %admin_domain%`. `.env` defaults to `cms-admin.local`, so if it is missing in prod, **every `/admin` URL returns 404**.
-- [ ] `DEFAULT_URI=https://<domain>/` and `CMS_DOMAIN=<domain>` (the Traefik router rule uses `CMS_DOMAIN`).
+- [ ] No leftover host-based routing: `grep -rn "api_domain\|API_DOMAIN\|admin\.\(cms\|example\)" config src .env* docker-compose*.yaml Dockerfile` finds nothing, except `app_domain` / `APP_DOMAIN`.
+- [ ] `APP_DOMAIN` is set in `.env.prod.local.dist`. It must equal the public domain, because the admin routes and the admin firewall have `host: %app_domain%`. `.env` defaults to `cms-admin.local`, so if it is missing in prod, **every `/admin` URL returns 404**.
+- [ ] `DEFAULT_URI=https://<domain>/` and `APP_DOMAIN=<domain>` (the Traefik router rule uses `APP_DOMAIN`).
 - [ ] `CORS_ALLOW_ORIGIN=^https://<domain-escaped>$` (single origin).
 
 ### Compose / env (`docker-compose.prod.yaml`, `.env.prod.local.dist`)
@@ -108,7 +108,7 @@ docker run --rm cms-admin:test ls public/assets public/bundles
 cp .env.prod.local.dist .env.prod.local     # throwaway local values; replace the ChangeMe placeholders
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local config > /dev/null && echo OK
 
-# 4. run it (set ADMIN_DOMAIN=localhost and DEFAULT_URI=http://localhost/ in the throwaway env file)
+# 4. run it (set APP_DOMAIN=localhost and DEFAULT_URI=http://localhost/ in the throwaway env file)
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local up -d --build
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local exec php-fpm bin/console lexik:jwt:generate-keypair
 curl -sI http://localhost/admin/login | head -1                                   # 200
@@ -124,7 +124,7 @@ docker compose -f docker-compose.prod.yaml --env-file .env.prod.local down -v   
 | Symptom | Cause / fix |
 |---|---|
 | Build killed (137) or `JavaScript heap out of memory` in the `assets` stage | Add swap on the server (vps-setup.md step 6); `--build-arg NODE_MAX_OLD_SPACE=1024` |
-| Every `/admin/...` URL is 404 from Symfony | `ADMIN_DOMAIN` in `.env.prod.local` differs from the public host (the default is `cms-admin.local`) |
+| Every `/admin/...` URL is 404 from Symfony | `APP_DOMAIN` in `.env.prod.local` differs from the public host (the default is `cms-admin.local`) |
 | `/api/sites/auth/login` returns 500 "Unable to create a signed JWT" / key not readable | the `jwt` volume is empty: generate the keypair (section 5); check `JWT_PASSPHRASE` |
 | php-fpm restarts: `Failed opening ... preload.php` | `opcache.preload` points to a missing file: restore `config/preload.php` or drop the setting |
 | Admin page without CSS/JS, or elFinder/CKEditor missing | `install-editor` did not run in the `app` stage, or Traefik rule lacks `/assets` / `/bundles` / `/uploaded` |

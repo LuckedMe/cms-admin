@@ -17,6 +17,6 @@ The full checklist, the reasons behind each item, the verification commands and 
 3. **Run the audit checklist** from the doc. Report each item as OK / fixed / needs a decision.
 4. **Fix** only what the checklist flags, with the smallest edits. Keep the stage names and the `app` default target. Do not create `docker-compose.traefik.yaml` in the repo: it stays on the server (cms.md 22.4). Do not touch the dev stack (`docker-compose.yaml`, `.docker/*/Dockerfile`).
 5. **Verify** with the commands in the doc (build both targets, `about`, compose `config`, curl). If Docker is unavailable, say which checks were not run.
-6. **Hand off:** list the server-side steps still needed (cms.md 22.3–22.8), including generating the JWT keypair once and `ADMIN_DOMAIN`/`CMS_DOMAIN` in `.env.prod.local`.
+6. **Hand off:** list the server-side steps still needed (cms.md 22.3–22.8), including generating the JWT keypair once and `APP_DOMAIN` in `.env.prod.local`.
 
 Never put real secrets into the repo files; `.env.prod.local.dist` holds placeholders only.
