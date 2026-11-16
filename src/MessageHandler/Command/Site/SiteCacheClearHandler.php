@@ -27,7 +27,7 @@ readonly class SiteCacheClearHandler implements CommandHandlerInterface
     {
         try {
             $baseUri = rtrim($command->domain, '/');
-            $url     = '/cms-admin-client/cache-clear';
+            $url     = '/lucked-me-cms-client/cache-clear';
 
             $response = $this->httpClient->request('POST', $url, [
                 'base_uri'    => $baseUri,
