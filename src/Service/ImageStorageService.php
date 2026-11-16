@@ -61,9 +61,9 @@ class ImageStorageService
             $originalImageTimestamp = $defaultImage->getMTime();
         }
 
-//        if (!$cacheFileManager->fileExists($filename, false)
-//            || $cacheFileManager->lastModified($filename, false) < $originalImageTimestamp
-//        ) {
+        if (!$cacheFileManager->fileExists($filename, false)
+            || $cacheFileManager->lastModified($filename, false) < $originalImageTimestamp
+        ) {
             $image = match (true) {
                 $originalImage !== null => $this->imageManager->decodeStream($originalImage),
                 default                 => $this->imageManager->decodeSplFileInfo($defaultImage),
@@ -74,9 +74,9 @@ class ImageStorageService
                 default           => $image->cover($width, $height),
             };
 
-            $encoded = $image->encodeUsingFileExtension(FileExtension::JPEG);
+            $encoded = $image->encodeUsingFileExtension(FileExtension::WEBP);
             $cacheFileManager->write($filename, $encoded->toString(), false);
-//        }
+        }
 
         return new SplFileInfo($cacheFileManager->getLocalFilepath($filename));
     }
