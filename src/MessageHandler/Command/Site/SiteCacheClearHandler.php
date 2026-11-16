@@ -26,8 +26,8 @@ readonly class SiteCacheClearHandler implements CommandHandlerInterface
     public function __invoke(SiteCacheClearCommand $command): void
     {
         try {
-            $baseUri  = rtrim($command->domain, '/');
-            $url      = '/cms-admin-client/cache-clear';
+            $baseUri = rtrim($command->domain, '/');
+            $url     = '/cms-admin-client/cache-clear';
 
             $response = $this->httpClient->request('POST', $url, [
                 'base_uri'    => $baseUri,
@@ -45,6 +45,11 @@ readonly class SiteCacheClearHandler implements CommandHandlerInterface
             // throw on error
             $response->getContent();
         } catch (Throwable $e) {
+            $this->logger->error('site-cache-clear-error', [
+                'siteId'  => $this->siteRepository->findOneByToken($command->token)?->getId()?->toString(),
+                'content' => $e->getMessage(),
+            ]);
+
             throw CommunicationException::createFromPrevious($e);
         }
     }
