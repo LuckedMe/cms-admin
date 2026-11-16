@@ -1,3 +1,13 @@
+header {
+    a.logo-custom {
+        background-color: #222d32;
+        float: left;
+        display: block;
+        img {
+            display: block;
+        }
+    }
+}
 
 .sonata-bc div.locale_switcher.btn-group {
     a.btn {

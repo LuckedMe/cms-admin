@@ -13,6 +13,12 @@
     data-api-cms-embed-collection-url="{{ path('api.admin.cms_embed.collection') }}"
 {% endblock %}
 
+{% block logo %}
+    <a class="logo-custom" href="{{ path('sonata_admin_dashboard') }}">
+        <img src="{{ asset('assets/images/admin/logo_230×50.jpg') }}" width="230" height="50" alt="">
+    </a>
+{% endblock %}
+
 {%- block sonata_top_nav_menu -%}
     <a href="{{ path('admin.logout') }}"
        class="exit-btn fa fa-sign-out"
