@@ -9,10 +9,13 @@ use App\Exception\CommunicationException;
 use App\Message\Command\Site\SiteCacheClearCommand;
 use App\Repository\Site\SiteRepository;
 use App\Service\Log\AppLogger;
+use JsonException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
 use function rtrim;
+
+use const JSON_THROW_ON_ERROR;
 
 readonly class SiteCacheClearHandler implements CommandHandlerInterface
 {
@@ -32,14 +35,24 @@ readonly class SiteCacheClearHandler implements CommandHandlerInterface
             $response = $this->httpClient->request('POST', $url, [
                 'base_uri'    => $baseUri,
                 'verify_peer' => false,
-                'headers'     => ['X-API-KEY' => $command->token],
+                'headers'     => [
+                    'Accept'    => 'application/json',
+                    'X-API-KEY' => $command->token,
+                ],
             ]);
+
+            try {
+                $content      = $response->getContent(false);
+                $responseJson = json_encode(json_decode($content, false, 512, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR);
+            } catch (JsonException) {
+                $responseJson = $response->getContent(false);
+            }
 
             $this->logger->debug('site-cache-clear', [
                 'siteId'   => $this->siteRepository->findOneByToken($command->token)?->getId()?->toString(),
                 'method'   => 'POST',
                 'url'      => $baseUri . $url,
-                'response' => $response->getContent(false),
+                'response' => $responseJson,
             ]);
 
             // throw on error

@@ -29,7 +29,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use function array_key_exists;
 use function get_class;
 
-readonly class ApiExceptionToErrorConverter implements EventSubscriberInterface
+final readonly class ApiExceptionToErrorConverter implements EventSubscriberInterface
 {
     private const array EXCEPTIONS_TO_CATCH = [
         BadRequestHttpException::class      => Response::HTTP_BAD_REQUEST,
