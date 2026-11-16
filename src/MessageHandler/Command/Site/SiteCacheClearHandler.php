@@ -45,11 +45,6 @@ readonly class SiteCacheClearHandler implements CommandHandlerInterface
             // throw on error
             $response->getContent();
         } catch (Throwable $e) {
-            $this->logger->error('site-cache-clear-error', [
-                'siteId'  => $this->siteRepository->findOneByToken($command->token)?->getId()?->toString(),
-                'content' => $e->getMessage(),
-            ]);
-
             throw CommunicationException::createFromPrevious($e);
         }
     }
