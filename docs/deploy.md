@@ -32,7 +32,7 @@ On the server (done once, see `vps-setup.md`):
 
 On your side:
 
-- [ ] Access to the GitHub repo `vtsot/cms-admin` and to the server over ssh.
+- [ ] Access to the GitHub repo `lucked-me/cms-admin` and to the server over ssh.
 - [ ] The latest code is pushed to the branch the server will pull (`main`).
 
 ## 3. Cloudflare: public hostname
@@ -51,7 +51,7 @@ The server needs read access to the repo. GitHub accepts one public key as a Dep
 
 ```bash
 ssh-keygen -t ed25519 -C "dad@vps-main cms" -f ~/.ssh/id_ed25519_cms -N ""
-cat ~/.ssh/id_ed25519_cms.pub     # GitHub: vtsot/cms-admin → Settings → Deploy keys → Add (read-only)
+cat ~/.ssh/id_ed25519_cms.pub     # GitHub: LuckedMe/cms-admin → Settings → Deploy keys → Add (read-only)
 
 cat >> ~/.ssh/config <<'CFG'
 Host github-cms
@@ -62,9 +62,9 @@ Host github-cms
 CFG
 chmod 600 ~/.ssh/config
 
-ssh -T git@github-cms             # "Hi vtsot/cms-admin! You've successfully authenticated"
+ssh -T git@github-cms             # "Hi LuckedMe/cms-admin! You've successfully authenticated"
 cd /home/dad/workspace/www
-git clone git@github-cms:vtsot/cms-admin.git cms
+git clone git@github-cms:LuckedMe/cms-admin.git cms
 cd cms
 ```
 
