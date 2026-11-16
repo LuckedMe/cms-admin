@@ -3,7 +3,6 @@
 
 # live
 @token=f62f480413df415bd8368cb64da8e67920efbdaf
-
 POST https://vacancy-grabber.lucked.me/cms-admin-client/cache-clear
 #POST https://cms-client.local/cms-admin-client/cache-clear
 #POST https://vacancy-grabber.local/cms-admin-client/cache-clear
