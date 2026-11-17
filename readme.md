@@ -37,6 +37,7 @@ Run them with [docker-compose.prod.yaml](./docker-compose.prod.yaml):
 cp .env.prod.local.dist .env.prod.local   # fill in passwords, APP_SECRET, domains, locales
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local up -d --build
 ```
+- to release an update on the VPS run `bin/deploy.sh` (or `make prod-deploy`): git pull, build, restart, status check; see [docs/deploy.md](./docs/deploy.md)
 - the Symfony cache is rebuilt on every php-fpm start, so `LOCALES` / `DEFAULT_LOCALE` are taken from `.env.prod.local`
 - migrations run on start while `RUN_MIGRATIONS=1`
 - messenger worker: add `--profile worker`

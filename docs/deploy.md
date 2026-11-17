@@ -239,16 +239,46 @@ In the browser: `https://cms.lucked.me/admin` loads with styles, the login works
 
 ## 11. Updating (every release)
 
+Use the deploy script, run on the server:
+
 ```bash
 cd /home/dad/workspace/www/cms
+bin/deploy.sh                  # git pull --ff-only + build + up -d + status check + image prune
+```
+
+To deploy from your own machine instead, push your commits and run:
+
+```bash
+bin/deploy.sh --remote                                   # ssh to DEPLOY_HOST and run the script there
+bin/deploy.sh --remote --host dad@<server> --dir /srv/cms
+```
+
+It opens an ssh session and runs `bin/deploy.sh` in `DEPLOY_DIR` on the server with the same options (so the script must already be in the server's checkout), and warns if you have unpushed commits. The server still pulls from GitHub through its deploy key (section 4).
+
+Settings (environment variables, all optional):
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `DEPLOY_HOST` | `dad@100.91.57.78` (Tailscale IP) | ssh target for `--remote` |
+| `DEPLOY_DIR` | `/home/dad/workspace/www/cms` | project folder on the server |
+| `BACKUP_SCRIPT` | `/home/dad/workspace/backups/backup-cms.sh` | database backup run before every update (section 12); a missing script only produces a warning |
+| `APP_URL` | `https://cms.lucked.me/` | checked with `curl` at the end, must answer 2xx/3xx; set it empty to skip the check |
+
+`BACKUP_SCRIPT` and `APP_URL` set on your machine are passed to the server with `--remote`.
+
+Options: `--no-backup` skips the pre-update backup, `--ref <tag|branch|commit>` deploys that revision (also used for a rollback), `--no-pull` deploys the code already checked out, `--worker` also starts the messenger worker, `--no-prune` keeps dangling images, `--help` prints the usage. The script refuses to run with a `!ChangeMe!` placeholder in `.env.prod.local`, with a shell `HTTP_PORT` set, or with local changes in the working tree, and exits non-zero if `php-fpm`, `nginx` or `mysql` is not running afterwards. Migrations run automatically (`RUN_MIGRATIONS=1`). `make prod-deploy` is a shortcut for `bin/deploy.sh`.
+
+It is equivalent to these manual steps:
+
+```bash
 git pull
-docker compose -f docker-compose.prod.yaml --env-file .env.prod.local up -d --build           # migrations run automatically (RUN_MIGRATIONS=1)
+docker compose -f docker-compose.prod.yaml --env-file .env.prod.local up -d --build --remove-orphans
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local ps
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local logs --tail 50 php-fpm  # no errors
 docker image prune -f
 ```
 
-- Take a database backup (section 12) before releases that contain migrations.
+- The script runs the backup script (section 12) before every update; `--no-backup` skips it.
 - A change of `.env.prod.local` needs only `docker compose -f docker-compose.prod.yaml --env-file .env.prod.local up -d` (containers are recreated with the new environment).
 - If `composer.json`, `yarn.lock` or the frontend changed, `--build` rebuilds the affected layers; the unchanged ones come from the cache.
 
@@ -256,9 +286,10 @@ Roll back a bad release:
 
 ```bash
 git log --oneline -5
-git checkout <previous-commit>
-docker compose -f docker-compose.prod.yaml --env-file .env.prod.local up -d --build
+bin/deploy.sh --ref <previous-commit>
 ```
+
+The checkout is detached afterwards; the next plain `bin/deploy.sh` needs `git checkout main` first.
 
 Migrations are not reverted automatically: restore the database from a backup if the failed release changed the schema (section 12).
 
@@ -336,6 +367,6 @@ docker compose -f docker-compose.prod.yaml --env-file .env.prod.local ps        
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local logs -f php-fpm                              # logs
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local exec php-fpm bin/console <command>           # Symfony console
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local exec php-fpm bin/console cache:clear         # clear cache
-git pull && docker compose -f docker-compose.prod.yaml --env-file .env.prod.local up -d --build                    # update
+bin/deploy.sh                                                                                                      # update (pull + build + restart)
 docker compose -f docker-compose.prod.yaml --env-file .env.prod.local restart php-fpm nginx                        # restart
 ```

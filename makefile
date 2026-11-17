@@ -134,6 +134,9 @@ yarn-build: ## Build frontend assets for production
 PROD     = docker compose -f docker-compose.prod.yaml --env-file .env.prod.local
 PROD_PHP = $(PROD) exec -T php-fpm php bin/console
 
+prod-deploy: ## [prod] Run bin/deploy.sh (git pull, build, restart, checks) - on the VPS
+	./bin/deploy.sh
+
 prod-build: ## [prod] Build production images
 	$(PROD) build
 
@@ -174,7 +177,7 @@ help: ## Show this help message
 	jwt-keys \
 	migrate \
 	node-console php-console \
-	prod-assets prod-build prod-console prod-down prod-jwt-keys prod-logs prod-migrate prod-ps prod-up \
+	prod-assets prod-build prod-console prod-deploy prod-down prod-jwt-keys prod-logs prod-migrate prod-ps prod-up \
 	test-api test-coverage-html test-coverage test test-unit test-web \
 	update \
 	yarn-build yarn-dev yarn-install yarn-watch
