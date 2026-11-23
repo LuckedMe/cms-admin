@@ -188,7 +188,7 @@ Run `make help` for the full list. Frequently used targets:
 | `make yarn-install` / `yarn-dev` / `yarn-watch` / `yarn-build` | Frontend build |
 | `make lint` / `make lint-fix` | PHP-CS-Fixer check / fix |
 
-Schema changes go through migrations: generate with `bin/console make:migration` inside `make php-console`, then run `make migrate`. Migration formatting follows the project skill in `.claude/skills/fix-migrations`.
+Schema changes go through migrations: generate with `bin/console make:migration` inside `make php-console`, then run `make migrate`. Migration formatting is done by the global Claude skill `fix-migrations` (`~/.claude/skills/fix-migrations`); the hand-formatted references are `migrations/2026/Version20261022154442.php` (generated DDL) and `Version20261022154456.php` (data SQL).
 
 ## Testing
 
