@@ -188,7 +188,7 @@ Run `make help` for the full list. Frequently used targets:
 | `make yarn-install` / `yarn-dev` / `yarn-watch` / `yarn-build` | Frontend build |
 | `make lint` / `make lint-fix` | PHP-CS-Fixer check / fix |
 
-Schema changes go through migrations: generate with `bin/console make:migration` inside `make php-console`, then run `make migrate`. Migration formatting is done by the global Claude skill `fix-migrations` (`~/.claude/skills/fix-migrations`); the hand-formatted references are `migrations/2026/Version20261022154442.php` (generated DDL) and `Version20261022154456.php` (data SQL).
+Schema changes go through migrations: generate with `bin/console make:migration` inside `make php-console`, then run `make migrate`. Maintenance of the production `Dockerfile` (versions, extensions, `.dockerignore`) is done by the global Claude skill `fix-dockerfile`; its script runs on the host: `bash ~/.claude/skills/fix-dockerfile/scripts/check.sh`. Migration formatting is done by the global Claude skill `fix-migrations` (`~/.claude/skills/fix-migrations`); the hand-formatted references are `migrations/2026/Version20261022154442.php` (generated DDL) and `Version20261022154456.php` (data SQL).
 
 ## Testing
 
@@ -266,7 +266,7 @@ Problems documented for the production build and start (webpack out of memory, m
 ## Documentation index
 
 - [docs/deploy.md](./docs/deploy.md): deploy, update, back up and roll back on the VPS.
-- [docs/main-dockerfile-fix.md](./docs/main-dockerfile-fix.md): why the production Dockerfile and compose file look the way they do.
+- [docs/main-dockerfile-fix.md](./docs/main-dockerfile-fix.md): why the production Dockerfile and compose file look the way they do; the project notes read by the global `fix-dockerfile` skill.
 - [AGENTS.md](./AGENTS.md): conventions for AI coding agents working on the project.
 
 ## License
