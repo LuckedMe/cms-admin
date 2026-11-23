@@ -1,6 +1,6 @@
 # Main (production) Dockerfile: instructions
 
-How to make and keep the root `Dockerfile` of `cms-admin` ready for the VPS. Used by the Claude skill `main-dockerfile-fix` (`.claude/skills/main-dockerfile-fix/SKILL.md`), and readable on its own.
+How to make and keep the root `Dockerfile` of `cms-admin` ready for the VPS. Project notes for the global Claude skill `fix-dockerfile` (`~/.claude/skills/fix-dockerfile/SKILL.md`), which reads this file for the VPS-specific facts (Traefik, Cloudflare Tunnel, JWT, domain). Readable on its own.
 
 Server-side steps (clone, secrets, Traefik override, first start, updates, backups) are **not** repeated here: see `vps-setup/docs/projects/cms.md`, steps 22.0 to 22.10.
 
@@ -37,6 +37,8 @@ Browser ─https─► Cloudflare (TLS, redirect to https) ─tunnel─► cloud
 If the `Dockerfile` is missing, rebuild it from this table. Keep these stage names: `docker-compose.prod.yaml` uses `target: app` and `target: nginx`.
 
 ## 3. Audit checklist
+
+Run the global skill's script first (`bash ~/.claude/skills/fix-dockerfile/scripts/check.sh`); it covers PHP/Node versions, extensions, `COPY` sources, stages, `.dockerignore`, user and prod build steps. The items below are the project-specific ones it cannot know.
 
 Mark each item OK / fixed / needs a decision.
 
